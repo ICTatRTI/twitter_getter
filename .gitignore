@@ -1,0 +1,30 @@
+# Created by https://www.gitignore.io/api/sbt
+
+### SBT ###
+# Simple Build Tool
+# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
+
+target/
+lib_managed/
+src_managed/
+project/boot/
+.history
+.cache
+
+.idea
+
+*.iml
+*.ipr
+*.iws
+.idea
+out
+
+build
+.classpath
+.project
+.settings
+org.scala-ide.sdt.core/META-INF/MANIFEST.MF
+org.scala-ide.sdt.update-site/site.xml
+
+
+.DS_Store
