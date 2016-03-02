@@ -1,5 +1,5 @@
 
-name := "sbt_temp"
+name := "twitter_getter"
 
 version := "1.0"
 
