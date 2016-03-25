@@ -1,4 +1,4 @@
-package com.databricks.apps.twitter_classifier
+package org.rti.rcd
 
 import java.io.File
 
@@ -8,8 +8,8 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
-  * Collect at least the specified number of tweets into json text files.
-  */
+ * Collect at least the specified number of tweets into json text files.
+ */
 object Collect {
   private var numTweetsCollected = 0L
   private var partNum = 0
@@ -39,7 +39,7 @@ object Collect {
 
     val tweetStream = TwitterUtils.createStream(ssc, Utils.getAuth)
       .map(gson.toJson(_))
-
+      
     tweetStream.foreachRDD((rdd, time) => {
       val count = rdd.count()
       if (count > 0) {
