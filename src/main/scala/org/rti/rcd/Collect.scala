@@ -8,14 +8,13 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
- * Collect tweets into json text files and write out once an hour
+ * Collect tweets into json text files and write out as specified
  */
 object Collect {
 
-  private var partNum = 0
   private val gson = new Gson()
-  private val partitionsEachInterval = 24
-  private val intervalSecs = 86400
+  private val partitionsEachInterval = 1 // the number of output files written for each interval
+  private val intervalSecs = 1200 // write out a new set of tweets every interval
   private var terms_array = new Array[String](0)
 
   def main(args: Array[String]) {
