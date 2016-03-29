@@ -6,7 +6,7 @@ __Examples__:
 
 Set search terms:
 ```
-export SEARCH_TERMS='term1,term2,term3'
+export TWITTER_SEARCH_TERMS='term1,term2,term3'
 ```
 
 Run collector

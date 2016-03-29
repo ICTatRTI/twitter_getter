@@ -31,9 +31,8 @@ object Collect {
     val ssc = new StreamingContext(sc, Seconds(intervalSecs))
 
     // Get search terms as comma delimited environment variable
-
     try {
-      val search_terms = sys.env("MJ_SEARCH_TERMS")
+      val search_terms = sys.env("TWITTER_SEARCH_TERMS")
       terms_array = search_terms.split(",")
     } catch {
       case e: NoSuchElementException => {
@@ -49,7 +48,6 @@ object Collect {
       if (count > 0) {
         val outputRDD = rdd.repartition(partitionsEachInterval)
         outputRDD.saveAsTextFile("s3n://"+ System.getProperty("rti.rcd.aws.bucketname") + "/tweets-" + time.milliseconds.toString)
-
       }
     })
 
