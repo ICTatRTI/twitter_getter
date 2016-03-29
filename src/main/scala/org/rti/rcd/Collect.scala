@@ -13,8 +13,8 @@ import org.apache.spark.{SparkConf, SparkContext}
 object Collect {
 
   private val gson = new Gson()
-  private val partitionsEachInterval = 1 // the number of output files written for each interval
-  private val intervalSecs = 1200 // write out a new set of tweets every interval
+  private val partitionsEachInterval = 5 // the number of output files written for each interval
+  private val intervalSecs = 300 // write out a new set of tweets every interval
   private var terms_array = new Array[String](0)
 
   def main(args: Array[String]) {
