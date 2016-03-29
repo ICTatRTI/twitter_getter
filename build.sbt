@@ -5,6 +5,8 @@ version := "1.0"
 
 scalaVersion := "2.11.7"
 
+fork in run := true
+
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "1.4.0",
   "org.apache.spark" %% "spark-mllib" % "1.4.0",

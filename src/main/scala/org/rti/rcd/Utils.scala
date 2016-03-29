@@ -5,6 +5,8 @@ import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.feature.HashingTF
 import twitter4j.auth.OAuthAuthorization
 import twitter4j.conf.ConfigurationBuilder
+import org.apache.commons.cli.HelpFormatter
+
 
 object Utils {
 
@@ -15,6 +17,9 @@ object Utils {
   val CONSUMER_SECRET = "consumerSecret"
   val ACCESS_TOKEN = "accessToken"
   val ACCESS_TOKEN_SECRET = "accessTokenSecret"
+  var AWS_ACCESS_KEY = "awsAccessKey"
+  var AWS_SECRET_ACCESS_KEY = "awsSecretAccessKey"
+  var AWS_BUCKET_NAME = "awsBucketName"
 
   val THE_OPTIONS = {
     val options = new Options()
@@ -22,24 +27,52 @@ object Utils {
     options.addOption(CONSUMER_SECRET, true, "Twitter OAuth Consumer Secret")
     options.addOption(ACCESS_TOKEN, true, "Twitter OAuth Access Token")
     options.addOption(ACCESS_TOKEN_SECRET, true, "Twitter OAuth Access Token Secret")
+    options.addOption(AWS_ACCESS_KEY, true, "AWS Access Key")
+    options.addOption(AWS_SECRET_ACCESS_KEY, true, "AWS Secret Access Key")
+    options.addOption(AWS_BUCKET_NAME, true, "AWS S3 Bucket Name")
     options
   }
 
-  def parseCommandLineWithTwitterCredentials(args: Array[String]) = {
+  def parseCommandLine(args: Array[String]) = {
     val parser = new PosixParser
     try {
       val cl = parser.parse(THE_OPTIONS, args)
+      if (cl.hasOption(CONSUMER_KEY) &&
+          cl.hasOption(CONSUMER_SECRET) &&
+          cl.hasOption(ACCESS_TOKEN) &&
+          cl.hasOption(ACCESS_TOKEN_SECRET) &&
+          cl.hasOption(AWS_ACCESS_KEY) &&
+          cl.hasOption(AWS_SECRET_ACCESS_KEY) &&
+          cl.hasOption(AWS_BUCKET_NAME)
+      ){
+        // fine
+      }
+      else {
+        help
+        System.exit(0)
+      }
+
       System.setProperty("twitter4j.oauth.consumerKey", cl.getOptionValue(CONSUMER_KEY))
       System.setProperty("twitter4j.oauth.consumerSecret", cl.getOptionValue(CONSUMER_SECRET))
       System.setProperty("twitter4j.oauth.accessToken", cl.getOptionValue(ACCESS_TOKEN))
       System.setProperty("twitter4j.oauth.accessTokenSecret", cl.getOptionValue(ACCESS_TOKEN_SECRET))
-      cl.getArgList.toArray
+      System.setProperty("rti.rcd.aws.accesskey", cl.getOptionValue(AWS_ACCESS_KEY))
+      System.setProperty("rti.rcd.aws.secretaccesskey", cl.getOptionValue(AWS_SECRET_ACCESS_KEY))
+      System.setProperty("rti.rcd.aws.bucketname", cl.getOptionValue(AWS_BUCKET_NAME))
+
     } catch {
       case e: ParseException =>
-        System.err.println("Parsing failed.  Reason: " + e.getMessage)
-        System.exit(1)
+        help
+        System.exit(0)
     }
   }
+
+  def help  ={
+    val formater = new HelpFormatter()
+    formater.printHelp("Main", THE_OPTIONS)
+    System.exit(0)
+  }
+
 
   def getAuth = {
     Some(new OAuthAuthorization(new ConfigurationBuilder().build()))
