@@ -8,14 +8,15 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
- * Collect tweets into json text files and write out every so many 600/10 sec (adjust as needed) .
+ * Collect tweets into json text files and write out once an hour
  */
 object Collect {
 
   private var partNum = 0
   private val gson = new Gson()
-  private val partitionsEachInterval = 10
-  private val intervalSecs = 600
+  private val partitionsEachInterval = 24
+  private val intervalSecs = 86400
+  private var terms_array = new Array[String](0)
 
   def main(args: Array[String]) {
 
@@ -30,7 +31,18 @@ object Collect {
 
     val ssc = new StreamingContext(sc, Seconds(intervalSecs))
 
-    val tweetStream = TwitterUtils.createStream(ssc, Utils.getAuth)
+    // Get search terms as comma delimited environment variable
+
+    try {
+      val search_terms = sys.env("MJ_SEARCH_TERMS")
+      terms_array = search_terms.split(",")
+    } catch {
+      case e: NoSuchElementException => {
+        println("No search terms found, getting everything")
+      }
+    }
+
+    val tweetStream = TwitterUtils.createStream(ssc, Utils.getAuth,terms_array)
       .map(gson.toJson(_))
       
     tweetStream.foreachRDD((rdd, time) => {
