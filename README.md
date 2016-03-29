@@ -1,8 +1,8 @@
 # twitter getter
 
-Set your search terms in an environment variable called `SEARCH_TERMS' and pass in the required parameters.
+Set your search terms in an environment variable called _SEARCH_TERMS_ and pass in the required parameters.
 
-Examples:
+__Examples__:
 
 Set search terms:
 ```
