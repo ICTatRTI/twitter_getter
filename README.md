@@ -20,7 +20,7 @@ sbt "run -awsAccessKey your-awsaccesskey  \
 
 Package and run
 ```
-sbt clean package
+sbt clean assembly
 nohup scala ./target/scala-2.11/twitter_getter-assembly-1.0.jar &
 ```
 
