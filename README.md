@@ -18,6 +18,12 @@ sbt "run -awsAccessKey your-awsaccesskey  \
 -accessTokenSecret your-accesstokensecret"
 ```
 
+Package and run
+```
+sbt clean package
+nohup scala ./target/scala-2.11/twitter_getter-assembly-1.0.jar &
+```
+
 note: This is pretty much entirely based on the [twitter classifier reference app](https://github.com/databricks/reference-apps)
 
 ![alt text](https://dl.dropboxusercontent.com/s/zsgtkc55k68vp88/baby_baluga.png "Baby beluga in the deep blue sea, Swim so wild and you swim so free. Heaven above and the sea below, And a little white whale on the go.") 
