@@ -1,6 +1,7 @@
 package org.rti.rcd
 
 import java.io.File
+import java.util.Date
 
 import com.google.gson.Gson
 import org.apache.spark.streaming.twitter.TwitterUtils
@@ -21,6 +22,8 @@ object Collect {
 
     Utils.parseCommandLine(args)
 
+
+
     println("Initializing Streaming Spark Context...")
     val conf = new SparkConf().setAppName(this.getClass.getSimpleName).setMaster("local[2]")
     val sc = new SparkContext(conf)
@@ -40,16 +43,56 @@ object Collect {
       }
     }
 
+
+
+    // Size of output batches in seconds
+    val outputBatchInterval = sys.env.get("OUTPUT_BATCH_INTERVAL").map(_.toInt).getOrElse(60)
+
+    // Date format for creating Hive partitions
+    val outDateFormat = outputBatchInterval match {
+      case 60 => new java.text.SimpleDateFormat("yyyy/MM/dd/HH/mm")
+      case 3600 => new java.text.SimpleDateFormat("yyyy/MM/dd/HH")
+    }
+
+    // Number of output files per batch interval.
+    val outputFiles = sys.env.get("OUTPUT_FILES").map(_.toInt).getOrElse(1)
+
+    // Output directory
+    val outputDir = sys.env.getOrElse("OUTPUT_DIR", "s3n://" + System.getProperty("rti.rcd.aws.bucketname"))
+
+
+    // Echo settings to the user
+    Seq(
+      ("OUTPUT_DIR" -> outputDir),
+      ("OUTPUT_FILES" -> outputFiles),
+      ("OUTPUT_BATCH_INTERVAL" -> outputBatchInterval)).foreach {
+      case (k, v) => println("%s: %s".format(k, v))
+    }
+
+
     val tweetStream = TwitterUtils.createStream(ssc, Utils.getAuth,terms_array)
       .map(gson.toJson(_))
-      
-    tweetStream.foreachRDD((rdd, time) => {
+
+    // Group into larger batches
+    //val batchedStatuses = tweetStream.window(Seconds(outputBatchInterval), Seconds(outputBatchInterval))
+
+    // Coalesce each batch into fixed number of files
+    val coalesced = tweetStream.transform(rdd => rdd.coalesce(outputFiles))
+
+    coalesced.foreachRDD((rdd, time) =>  {
       val count = rdd.count()
       if (count > 0) {
-        val outputRDD = rdd.repartition(partitionsEachInterval)
-        outputRDD.saveAsTextFile("s3n://"+ System.getProperty("rti.rcd.aws.bucketname") + "/tweets-" + time.milliseconds.toString)
+        print("count more than one")
+        val outPartitionFolder = outDateFormat.format(new Date(time.milliseconds))
+        //val outputRDD = rdd.repartition(partitionsEachInterval)
+        rdd.saveAsTextFile("%s/%s".format(outputDir, outPartitionFolder))
+
+      } else  {
+        print("coujnt not even one")
       }
     })
+
+
 
     ssc.start()
     ssc.awaitTermination()
