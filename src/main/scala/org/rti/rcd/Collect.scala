@@ -45,7 +45,7 @@ object Collect {
 
 
     // Size of output batches in seconds
-    val outputBatchInterval = sys.env.get("OUTPUT_BATCH_INTERVAL").map(_.toInt).getOrElse(60)
+    val outputBatchInterval = sys.env.get("OUTPUT_BATCH_INTERVAL").map(_.toInt).getOrElse(3600)
 
     // Date format for creating Hive partitions
     val outDateFormat = outputBatchInterval match {
