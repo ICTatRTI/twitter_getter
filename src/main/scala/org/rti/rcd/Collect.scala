@@ -1,6 +1,6 @@
 package org.rti.rcd
 
-import java.io.File
+
 import java.util.Date
 
 import com.google.gson.Gson
@@ -14,8 +14,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object Collect {
 
   private val gson = new Gson()
-  private val partitionsEachInterval = 5 // the number of output files written for each interval
-  private val intervalSecs = 300 // write out a new set of tweets every interval
+  private val intervalSecs =  3600 // write out a new set of tweets every interval
   private var terms_array = new Array[String](0)
 
   def main(args: Array[String]) {
@@ -73,23 +72,23 @@ object Collect {
     val tweetStream = TwitterUtils.createStream(ssc, Utils.getAuth,terms_array)
       .map(gson.toJson(_))
 
-    // Group into larger batches
-    //val batchedStatuses = tweetStream.window(Seconds(outputBatchInterval), Seconds(outputBatchInterval))
 
     // Coalesce each batch into fixed number of files
     val coalesced = tweetStream.transform(rdd => rdd.coalesce(outputFiles))
+
+
 
     coalesced.foreachRDD((rdd, time) =>  {
       val count = rdd.count()
       if (count > 0) {
         print("count more than one")
         val outPartitionFolder = outDateFormat.format(new Date(time.milliseconds))
-        //val outputRDD = rdd.repartition(partitionsEachInterval)
-        rdd.saveAsTextFile("%s/%s".format(outputDir, outPartitionFolder))
+        rdd.saveAsTextFile("%s/%s/part-%s".format(outputDir, outPartitionFolder,time.milliseconds))
 
       } else  {
-        print("coujnt not even one")
+        print("count not even one")
       }
+
     })
 
 
