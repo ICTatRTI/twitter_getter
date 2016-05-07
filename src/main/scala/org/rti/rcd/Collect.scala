@@ -54,7 +54,7 @@ object Collect {
     }
 
     // Number of output files per batch interval.
-    val outputFiles = sys.env.get("OUTPUT_FILES").map(_.toInt).getOrElse(1)
+    val outputFiles = sys.env.get("OUTPUT_FILES").map(_.toInt).getOrElse(3)
 
     // Output directory
     val outputDir = sys.env.getOrElse("OUTPUT_DIR", "s3n://" + System.getProperty("rti.rcd.aws.bucketname"))
@@ -83,7 +83,7 @@ object Collect {
       if (count > 0) {
         print("count more than one")
         val outPartitionFolder = outDateFormat.format(new Date(time.milliseconds))
-        rdd.saveAsTextFile("%s/%s/part-%s".format(outputDir, outPartitionFolder,time.milliseconds))
+        rdd.saveAsTextFile("%s/%s".format(outputDir, outPartitionFolder))
 
       } else  {
         print("count not even one")
