@@ -1,0 +1,51 @@
+marijuana OR
+hashish OR
+cannabinoids OR
+cannabis OR
+weed OR
+(bong AND NOT ("beer bong" OR beerbong OR "bong bong" OR "bing bong")) OR
+medicalmarijuana OR
+LegalizeMarijuana OR
+marijuanaprohibition OR
+mmj OR
+mmot OR
+daggadebate OR
+breakthetaboo OR
+legalizecannabis OR
+cannabisismedicine OR
+"sensi seed" OR
+"sensi seeds" OR
+"kush seed" OR
+"kush seeds" OR
+mmar OR
+mumps OR
+"hash oil" OR
+spliff OR
+thc OR
+apothecanna OR
+marihuana OR
+ganja OR
+"glass pipe" OR
+"Baby bhang" OR
+Fraho OR
+frajo OR
+Indica OR
+"Pack a bowl" OR
+Reefer OR
+Ruderalis OR
+Sativa OR
+"Smoke a bowl" OR
+"Spark it up" OR
+"#pot" OR
+(joint AND (smoke OR roll OR fat OR pass OR light)) OR
+(doobie AND (smoke OR roll OR fat OR pass)) OR 
+(blunt AND (roll OR hit OR smoke OR high OR paper)) OR
+(bud AND (smoke OR hit)) OR
+(doob AND (smoke OR roll OR fat OR pass))  OR
+kief OR
+(kush AND NOT Chikki) OR
+stoner OR
+stoned OR
+(pot AND (smoke OR smoking OR smokin OR legal OR shops OR high OR legalize OR recreational)) OR
+pothead OR
+"pot head"
