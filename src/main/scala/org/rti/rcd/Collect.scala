@@ -7,6 +7,12 @@ import com.google.gson.Gson
 import org.apache.spark.streaming.twitter.TwitterUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
+import scala.io.Source
+import java.io.File
+import java.nio.file.{Paths, Files}
+
+
+
 
 /**
  * Collect tweets into json text files and write out as specified
@@ -16,12 +22,11 @@ object Collect {
   private val gson = new Gson()
   private val intervalSecs =  3600 // write out a new set of tweets every interval
   private var terms_array = new Array[String](0)
+  private val filename = "keywords.txt"
 
   def main(args: Array[String]) {
 
     Utils.parseCommandLine(args)
-
-
 
     println("Initializing Streaming Spark Context...")
     val conf = new SparkConf().setAppName(this.getClass.getSimpleName).setMaster("local[2]")
@@ -31,15 +36,18 @@ object Collect {
     sc.hadoopConfiguration.set("fs.s3n.awsSecretAccessKey",System.getProperty("rti.rcd.aws.secretaccesskey"))
 
     val ssc = new StreamingContext(sc, Seconds(intervalSecs))
+    val keywordFile = new File("keywords.txt")
 
     // Get search terms as comma delimited environment variable
-    try {
-      val search_terms = sys.env("TWITTER_SEARCH_TERMS")
+    if (keywordFile.length() > 0)   {
+
+      val search_terms = Source.fromFile(keywordFile).getLines.mkString
       terms_array = search_terms.split(",")
-    } catch {
-      case e: NoSuchElementException => {
+
+    } else {
+
         println("No search terms found, getting everything")
-      }
+
     }
 
 

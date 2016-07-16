@@ -1,13 +1,9 @@
 # twitter getter 
 
-Set your search terms in an environment variable called _SEARCH_TERMS_ and pass in the required parameters.
+Set your search terms in an the file `keywords.txt` and pass in the required parameters.
 
 __Examples__:
 
-Set search terms:
-```
-export TWITTER_SEARCH_TERMS='term1,term2,term3'
-```
 
 Run collector
 ```
